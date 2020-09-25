@@ -30,5 +30,16 @@
          WorkingDirectory="$(BuildSolutionDir)/src/$(DeploymentProject)\bin\$(Configuration)\"
          ZipFileName="$(BuildSolutionDir)/artifacts/$(Configuration).zip" />
     </Target>
+ <Target Name="Update" DependsOnTargets="Build">
+    <ItemGroup>
+      <!-- All files from build -->
+      <ZipFiles Include="$(BuildSolutionDir)/src/$(DeploymentProject)\bin\$(Configuration)\**\*.*"
+	  Exclude="**\$(DeploymentProject).exe.config;"
+	  />
+    </ItemGroup>
+    <Zip Files="@(ZipFiles)"
+         WorkingDirectory="$(BuildSolutionDir)/src/$(DeploymentProject)\bin\$(Configuration)\"
+         ZipFileName="$(BuildSolutionDir)/artifacts/$(Configuration).zip" />
+    </Target>	
   
 </Project>
