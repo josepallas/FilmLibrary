@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A052B64A-B464-4E70-8A2B-2742227DDED6}</ProjectGuid>
+    <ProjectGuid>{31A930B1-F058-4164-B120-0ACC9755D83F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>FilmLibrary.App</RootNamespace>
     <AssemblyName>FilmLibrary.App</AssemblyName>
