@@ -8,6 +8,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <DeploymentProject>FilmLibrary.App</DeploymentProject>
     <OutputDirectory>$(SrcDir)\$(DeploymentProject)\bin\$(Configuration)</OutputDirectory>
+	<SolutionName>FilmLibrary.sln</SolutionName>
   </PropertyGroup>
 
   <Target Name="Run">
@@ -18,7 +19,7 @@
   
    <Target Name="Restore">
     <Message Text="Restore NuGet packages" />
-    <Exec Command="NuGet.exe restore &quot;$(SrcDir)/FilmLibrary.sln&quot;" ContinueOnError="False"/>
+    <Exec Command="NuGet.exe restore &quot;$(SrcDir)/$(SolutionName)&quot;" ContinueOnError="False"/>
   </Target> 
   
   <Target Name="Clean">
@@ -27,7 +28,7 @@
   </Target>
   <Target Name="Build">
     <MSBuild 
-      Projects="$(SrcDir)/FilmLibrary.sln"
+      Projects="$(SrcDir)/$(SolutionName)"
       Properties="Configuration=$(Configuration)" >
     </MSBuild>
   </Target>
