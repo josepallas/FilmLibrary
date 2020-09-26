@@ -18,7 +18,7 @@
   
    <Target Name="Restore">
     <Message Text="Restore NuGet packages" />
-    <Exec Command="NuGet.exe restore $(SrcDir)/FilmLibrary.sln" ContinueOnError="False"/>
+    <Exec Command="NuGet.exe restore &quot;$(SrcDir)/FilmLibrary.sln&quot;" ContinueOnError="False"/>
   </Target> 
   
   <Target Name="Clean">
