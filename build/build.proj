@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build"  
-    xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Run" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
 
   <PropertyGroup>
@@ -8,38 +7,39 @@
     <SrcDir>$(BuildSolutionDir)/src</SrcDir>	
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <DeploymentProject>FilmLibrary.App</DeploymentProject>
-    <OutputDirectory>$(DeploymentProject)\bin\$(Configuration)</OutputDirectory>
+    <OutputDirectory>$(SrcDir)\$(DeploymentProject)\bin\$(Configuration)</OutputDirectory>
   </PropertyGroup>
 
+  <Target Name="Run">
+    <CallTarget Targets="Restore" />
+    <CallTarget Targets="Build" />
+    <CallTarget Targets="Package" />
+  </Target>
+  
+   <Target Name="Restore">
+    <Message Text="Restore NuGet packages" />
+    <Exec Command="NuGet.exe restore $(SrcDir)/FilmLibrary.sln" ContinueOnError="False"/>
+  </Target> 
+  
   <Target Name="Clean">
     <RemoveDir Directories="$(OutputDirectory)" 
             Condition="Exists($(OutputDirectory))"></RemoveDir>
   </Target>
   <Target Name="Build">
     <MSBuild 
-      Projects="$(BuildSolutionDir)/src/FilmLibrary.sln"
+      Projects="$(SrcDir)/FilmLibrary.sln"
       Properties="Configuration=$(Configuration)" >
     </MSBuild>
   </Target>
  <Target Name="Package" DependsOnTargets="Build">
     <ItemGroup>
       <!-- All files from build -->
-      <ZipFiles Include="$(BuildSolutionDir)/src/$(DeploymentProject)\bin\$(Configuration)\**\*.*"/>
+      <ZipFiles Include="$(OutputDirectory)\**\*.*"/>
     </ItemGroup>
     <Zip Files="@(ZipFiles)"
-         WorkingDirectory="$(BuildSolutionDir)/src/$(DeploymentProject)\bin\$(Configuration)\"
+         WorkingDirectory="$(OutputDirectory)\"
          ZipFileName="$(BuildSolutionDir)/artifacts/$(Configuration).zip" />
     </Target>
- <Target Name="Update" DependsOnTargets="Build">
-    <ItemGroup>
-      <!-- All files from build -->
-      <ZipFiles Include="$(BuildSolutionDir)/src/$(DeploymentProject)\bin\$(Configuration)\**\*.*"
-	  Exclude="**\$(DeploymentProject).exe.config;"
-	  />
-    </ItemGroup>
-    <Zip Files="@(ZipFiles)"
-         WorkingDirectory="$(BuildSolutionDir)/src/$(DeploymentProject)\bin\$(Configuration)\"
-         ZipFileName="$(BuildSolutionDir)/artifacts/$(Configuration).zip" />
-    </Target>	
+	
   
 </Project>
