@@ -6,35 +6,29 @@
     <BuildSolutionDir>$(MSBuildProjectDirectory)/..</BuildSolutionDir>  
     <SrcDir>$(BuildSolutionDir)/src</SrcDir>	
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-    <DeploymentProject>FilmLibrary.Web</DeploymentProject>
-	<PublishFolder>bin\app.publish</PublishFolder>	
-    <OutputDirectory>$(SrcDir)\$(DeploymentProject)\$(PublishFolder)</OutputDirectory>
-	<SolutionName>FilmLibrary.sln</SolutionName>
 	<ProjectName>FilmLibrary.Web</ProjectName>
+	<ReleaseDir>$(BuildSolutionDir)/artifacts</ReleaseDir>
+    <OutputDirectory>$(ReleaseDir)\web</OutputDirectory>
 
   </PropertyGroup>
 
   <Target Name="Run">
-    <CallTarget Targets="Restore" />
+    <CallTarget Targets="Clean" />
     <CallTarget Targets="Build" />
     <CallTarget Targets="Package" />	
   </Target>
   
-   <Target Name="Restore">
-    <Message Text="Restore NuGet packages" />
-    <Exec Command="NuGet.exe restore &quot;$(SrcDir)/$(SolutionName)&quot;" ContinueOnError="False"/>
-  </Target> 
   
   <Target Name="Clean">
-    <RemoveDir Directories="$(OutputDirectory)" 
-            Condition="Exists($(OutputDirectory))"></RemoveDir>
+    <RemoveDir Directories="$(ReleaseDir)" 
+            Condition="Exists($(ReleaseDir))"></RemoveDir>
   </Target>
   <Target Name="Build">
   <MSBuild Projects="$(SrcDir)/$(ProjectName)/$(ProjectName).csproj"
 			Properties="Configuration=$(Configuration);
 			DeployOnBuild=true;
 			DeployDefaultTarget=WebPublish;
-			PublishUrl=$(PublishFolder);
+			PublishUrl=$(OutputDirectory);
 			WebPublishMethod=FileSystem" />            		
 	</Target>  
  <Target Name="Package" DependsOnTargets="Build">
@@ -44,7 +38,7 @@
     </ItemGroup>
     <Zip Files="@(ZipFiles)"
          WorkingDirectory="$(OutputDirectory)\"
-         ZipFileName="$(BuildSolutionDir)/artifacts/Web$(Configuration).zip" />
+         ZipFileName="$(ReleaseDir)/DimensionWeb.zip" />
     </Target>	
 	
   

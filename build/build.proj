@@ -9,22 +9,21 @@
     <DeploymentProject>FilmLibrary.App</DeploymentProject>
     <OutputDirectory>$(SrcDir)\$(DeploymentProject)\bin\$(Configuration)</OutputDirectory>
 	<SolutionName>FilmLibrary.sln</SolutionName>
+	<ReleaseDir>$(BuildSolutionDir)/artifacts</ReleaseDir>
+	<DestinationDir>$(ReleaseDir)/dimension</DestinationDir>
+
   </PropertyGroup>
 
   <Target Name="Run">
-    <CallTarget Targets="Restore" />
+    <CallTarget Targets="Clean" />
     <CallTarget Targets="Build" />
+    <CallTarget Targets="CopyRelease" />
     <CallTarget Targets="Package" />
   </Target>
-  
-   <Target Name="Restore">
-    <Message Text="Restore NuGet packages" />
-    <Exec Command="NuGet.exe restore &quot;$(SrcDir)/$(SolutionName)&quot;" ContinueOnError="False"/>
-  </Target> 
-  
+    
   <Target Name="Clean">
-    <RemoveDir Directories="$(OutputDirectory)" 
-            Condition="Exists($(OutputDirectory))"></RemoveDir>
+    <RemoveDir Directories="$(ReleaseDir)" 
+            Condition="Exists($(ReleaseDir))"></RemoveDir>
   </Target>
   <Target Name="Build">
     <MSBuild 
@@ -32,14 +31,21 @@
       Properties="Configuration=$(Configuration)" >
     </MSBuild>
   </Target>
+  <Target Name="CopyRelease">
+	<MakeDir Directories="$(DestinationDir)"/>
+		<ItemGroup>
+			<ReleaseFiles Include="$(OutputDirectory)\**\*.*"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(ReleaseFiles)" DestinationFolder="$(DestinationDir)"/>
+  </Target>  
  <Target Name="Package" DependsOnTargets="Build">
     <ItemGroup>
       <!-- All files from build -->
-      <ZipFiles Include="$(OutputDirectory)\**\*.*"/>
+      <ZipFiles Include="$(DestinationDir)\**\*.*"/>
     </ItemGroup>
     <Zip Files="@(ZipFiles)"
-         WorkingDirectory="$(OutputDirectory)\"
-         ZipFileName="$(BuildSolutionDir)/artifacts/$(Configuration).zip" />
+         WorkingDirectory="$(DestinationDir)"
+         ZipFileName="$(ReleaseDir)/Dimension.zip" />
     </Target>
 	
   
